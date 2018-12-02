@@ -33,7 +33,7 @@ app.engine(
 app.set("view engine", "handlebars");
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/NYTdb", {
+mongoose.connect("mongodb://localhost/Oniondb", {
   useNewUrlParser: true
 });
 
@@ -41,29 +41,43 @@ mongoose.connect("mongodb://localhost/NYTdb", {
 // if I have time I will put routes in MVC paradigm //
 
 // Route for index page
+// app.get("/", function (req, res) {
+
+//   res.render("index", {
+//     layout: 'main.handlebars'
+//   });
+// });
+
 app.get("/", function (req, res) {
 
-  res.render("index", {
-    layout: 'main.handlebars'
+  // Create a new Article using the `result` object built from scraping
+  db.Article.find({})
+  .then(function (dbArticle) {
+    res.render("index", {dbArticle: dbArticle});
+  })
+  .catch(function (err) {
+  // If an error occurred, log it
+  console.log(err);
   });
+
 });
 
 // A GET route for scraping the NYT website
 app.get("/scrape", function (req, res) {
-  axios.get("https://www.nytimes.com/").then(function (response) {
+  axios.get("https://www.theonion.com/").then(function (response) {
     var $ = cheerio.load(response.data);
-    $("div.css-6p6lnl").each(function (i, element) {
+    $("div.post-wrapper").each(function (i, element) {
       var result = {};
       result.title = $(this)
-        .children("a").children("div").children("h2")
+        .children("article").children("header").children("h1")
         .text();
       result.link = $(this)
-        .children("a")
+        .children("article").children("header").children("h1").children("a")
         .attr("href");
       result.summary = $(this)
-        .children("a").children("p")
+        .children("article").children("div.item__content").children("div.entry-summary").children("p")
         .text();
-      console.log(result);
+      console.log("This is the result: " + result);
       db.Article.create(result)
         .then(function (dbArticle) {
           console.log(dbArticle);
@@ -101,38 +115,22 @@ app.get("/articles/:id", function (req, res) {
     });
 });
 
-//Saved Articles 
-app.post("/saved", function (req, res) {
-  db.Saved.create(req.body).then(function (savedArticle) {
-    return db.Article.findOneAndUpdate({
-      _id: req.params.id
-    }, {
-      saved: savedArticle._id
-    }, {
-      new: true
+//Get route for Saved Articles(Boolean toggled to true in Article DB)
+app.get("/saved", function (req, res) {
+  db.Article.find({
+      saved: true
+    })
+    .then(function (dbSaved) {
+      res.render("saved", {
+        dbSaved: dbSaved
+      });
+    })
+    .catch(function (err) {
+      // If an error occurred, log it
+      console.log(err);
     });
-  }).then(function (savedArticle) {
-
-    res.render("saved", {
-      savedArticle: savedArticle
-    });
-  }).catch(function (err) {
-    console.log(err);
-  });
 });
 
-app.get("/saved", function (req, res) {
-  db.Saved.find({})
-    .populate("saved")
-    .then(function (dbArticle) {
-      console.log(dbArticle);
-      res.render("saved", {
-        savedArticle: dbArticle
-      });
-    }).catch(function (error) {
-      res.json(error);
-    })
-})
 
 // Route for saving/updating an Article's associated Note
 app.post("/articles/:id", function (req, res) {
@@ -181,8 +179,8 @@ app.get("/notes/:id", function (req, res) {
 // Route for deleting an article from saved
 app.delete("/saved/:id", function (req, res) {
   db.Saved.findOne({
-    _id: req.params.id
-  }).deleteOne()
+      _id: req.params.id
+    }).deleteOne()
     //db.Saved.deleteOne({_id: req.params.id})
     .then(function (savedArticle) {
       // View the added result in the console

@@ -1,3 +1,5 @@
+//added saved attribute to Article schema as a boolean- attempting to not need this schema. 
+
 var mongoose= require("mongoose");
 var Schema= mongoose.Schema;
 
@@ -17,6 +19,10 @@ var articleSchema = new Schema({
     link: {
         type:String,
         required: true
+    },
+    saved: {
+        type: Boolean, 
+        default: false
     },
     note: {
         type: Schema.Types.ObjectId,

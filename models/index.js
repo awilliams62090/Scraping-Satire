@@ -1,5 +1,6 @@
-module.exports={
+module.exports = {
     Article: require("./Article"),
     Note: require("./Note"),
-    Saved: require("./Saved")
+    //attempting to not use Saved Schema
+    // Saved: require("./Saved")
 }

@@ -1,21 +1,60 @@
 <nav class="navbar navbar-dark bg-dark">
-   <a href="/" class="navbar-brand">Scraping Satire</a>
+  <a href="/" class="navbar-brand">Scraping Satire</a>
   <form class="form-inline">
-    <button class="btn btn-outline-success" type="button">Get new articles!</button>
-    <button class="btn btn-sm btn-outline-secondary" type="button">view saved articles</button>
+    <button class="btn btn-outline-success" type="button" id="reScrape">See New Articles</button>
+    <a href="./saved" class="btn btn-outline-success" role="button">View Saved Articles</a>
   </form>
 </nav>
 
-<div id="container">
-      <h1>America's Finest News Scraper</h1>
-     
-      <div id="articles"></div>
-      <div id="notes"></div>
-
-       <table class="savedArticles">
-        <tr>
-
-        </tr>
-      </table>
+<div class="wrapper">
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 class="display-4">America's Finest News Scraper</h1>
+      <h2 class="lead">View the latest articles from America's Finest News Source, The Onion.</h2>
     </div>
-    
+  </div>
+  <div class="container">
+    {{#each dbArticle}}
+    <div class="card articles">
+      <div class="card-body">
+        <div class="col">
+          <h4>{{this.title}}</h4>
+          <p>{{this.summary}}</p>
+          <a href={{this.link}} target="_blank">Read Full Article</a>
+        </div>
+        <div class="col">
+          <!-- Delete Article Button -->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            Delete Article
+          </button>
+          <!-- Button to trigger notes modal -->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            View Notes
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Modal for Notes-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">{{dbArticle.title}} Notes</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {{this.note}}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{/each}}
