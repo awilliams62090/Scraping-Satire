@@ -1,17 +1,16 @@
 // Make sure we wait to attach our handlers until the DOM is fully loaded.
-$(document).ready(function (){
-    // Grab the articles as a json
-    // $.getJSON("/articles", function (data) {
-    //     // For each one
-    //     for (var i = 0; i < data.length; i++) {
-    //         // Display the apropos information on the page
-    //         $(".articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
-    //     }
-    // });
+$(document).ready(function () {
 
+    //Re-Scraping theonion.com
+    $("#scrapeAgain").on("click", function () {
+        // $(".articles").empty();
+        $.get("/scrape");
+        console.log("Rescrape complete!");
+        location.reload();
+    });
 
-    // Whenever someone clicks a p tag
-    $(document).on("click", "p", function () {
+    // Whenever someone opens note modal
+    $("#noteModal").on("click", function () {
         // Empty the notes from the note section
         $("#notes").empty();
         // Save the id from the p tag
@@ -65,40 +64,4 @@ $(document).ready(function (){
         $("#bodyinput").val("");
     });
 
-
-    $(".burgButton").on("click", function (event) {
-        var id = $(this).data("id");
-
-
-        // Send the PUT request.
-        $.ajax("/api/burgers/" + id, {
-            type: "PUT",
-        }).then(
-            function () {
-                // Reload the page to get the updated list
-                location.reload();
-            }
-        );
-    });
-
-    $(".create-form").on("submit", function (event) {
-        // Make sure to preventDefault on a submit event.
-        event.preventDefault();
-
-        var newBurger = {
-            burger_name: $("#burg").val(),
-        };
-
-        // Send the POST request.
-        $.ajax("/api/burgers", {
-            type: "POST",
-            data: newBurger
-        }).then(
-            function () {
-                console.log("created new burger!");
-                // Reload the page to get the updated list
-                location.reload();
-            }
-        );
-    });
 });

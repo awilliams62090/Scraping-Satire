@@ -41,13 +41,6 @@ mongoose.connect("mongodb://localhost/Oniondb", {
 // if I have time I will put routes in MVC paradigm //
 
 // Route for index page
-// app.get("/", function (req, res) {
-
-//   res.render("index", {
-//     layout: 'main.handlebars'
-//   });
-// });
-
 app.get("/", function (req, res) {
 
   // Create a new Article using the `result` object built from scraping
@@ -62,7 +55,7 @@ app.get("/", function (req, res) {
 
 });
 
-// A GET route for scraping the NYT website
+// A GET route for scraping the onion website
 app.get("/scrape", function (req, res) {
   axios.get("https://www.theonion.com/").then(function (response) {
     var $ = cheerio.load(response.data);
@@ -115,22 +108,6 @@ app.get("/articles/:id", function (req, res) {
     });
 });
 
-//Get route for Saved Articles(Boolean toggled to true in Article DB)
-app.get("/saved", function (req, res) {
-  db.Article.find({
-      saved: true
-    })
-    .then(function (dbSaved) {
-      res.render("saved", {
-        dbSaved: dbSaved
-      });
-    })
-    .catch(function (err) {
-      // If an error occurred, log it
-      console.log(err);
-    });
-});
-
 
 // Route for saving/updating an Article's associated Note
 app.post("/articles/:id", function (req, res) {
@@ -163,7 +140,7 @@ app.get("/notes/", function (req, res) {
   })
 });
 
-//Viewing the notes associated witha  specific article
+//Viewing the notes associated with  specific article
 app.get("/notes/:id", function (req, res) {
   db.Article.findOne({
     _id: req.params.id
@@ -176,32 +153,49 @@ app.get("/notes/:id", function (req, res) {
   })
 });
 
-// Route for deleting an article from saved
-app.delete("/saved/:id", function (req, res) {
-  db.Saved.findOne({
-      _id: req.params.id
-    }).deleteOne()
-    //db.Saved.deleteOne({_id: req.params.id})
-    .then(function (savedArticle) {
-      // View the added result in the console
-      console.log(savedArticle);
-      return db.Saved.findOneAndUpdate({
-        _id: req.params.id
-      }, {
-        savedArticle: savedArticle._id
-      }, {
-        new: true
-      });
+//I changed my Articles to have a Boolean Attribute of saved, to make the DB simple 
+// // Route for deleting an article from saved
+// app.delete("/saved/:id", function (req, res) {
+//   db.Saved.findOne({
+//       _id: req.params.id
+//     }).deleteOne()
+//     //db.Saved.deleteOne({_id: req.params.id})
+//     .then(function (savedArticle) {
+//       // View the added result in the console
+//       console.log(savedArticle);
+//       return db.Saved.findOneAndUpdate({
+//         _id: req.params.id
+//       }, {
+//         savedArticle: savedArticle._id
+//       }, {
+//         new: true
+//       });
+//     })
+//     .then(function (savedArticle) {
+//       res.render("saved", {
+//         savedArticle: savedArticle
+//       });
+//     })
+//     .catch(function (err) {
+//       console.log(err);
+//     });
+// })
+
+//Get route for Saved Articles(Boolean toggled to true in Article DB)
+app.get("/saved", function (req, res) {
+  db.Article.find({
+      saved: true
     })
-    .then(function (savedArticle) {
+    .then(function (dbSaved) {
       res.render("saved", {
-        savedArticle: savedArticle
+        dbSaved: dbSaved
       });
     })
     .catch(function (err) {
+      // If an error occurred, log it
       console.log(err);
     });
-})
+});
 
 // Start the server
 app.listen(PORT, function () {

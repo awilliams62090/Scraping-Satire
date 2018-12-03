@@ -1,9 +1,46 @@
+/* font-family: 'Unlock', cursive;
+font-family: 'Yanone Kaffeesatz', sans-serif; */
 
-
-.jumbotron{
-    text-align: center;
+body{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    background-image: linear-gradient(to bottom left, whitesmoke, seagreen);
 }
 
+h1, h2, h3{
+    font-family: 'Unlock', cursive
+}
+
+ a{
+     color: black
+ }
+
+ a:hover{
+     color: whitesmoke
+ }
+
+#indexJumbotron{
+    text-align: center;
+    vertical-align: middle;
+    top: 50%;
+    background-image: url(../images/newspaper.png);
+    /* Set a specific height */
+    height: 200px; 
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: black;
+    text-shadow: 2px 2px 4px whitesmoke;
+    font-family: 'Goudy Bookletter 1911', serif;
+    font-weight: bolder;
+    padding-top: 0;
+    box-shadow: 10px 10px 5px grey;
+}
+
+.articles{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
+}
 
 footer {
     position: sticky;
