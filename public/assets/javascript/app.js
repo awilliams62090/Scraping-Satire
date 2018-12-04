@@ -9,10 +9,25 @@ $(document).ready(function () {
         location.reload();
     });
 
+//Saving Articles
+    $(".toggleSaved").on("click", function(event) {
+        var id = $(this).data("id");
+  
+     // Send the PUT request.
+        $.ajax("/article/" + id, {
+          type: "PUT",
+        }).then(
+          function() {
+            // Reload the page to get the updated list
+            location.reload();
+          }
+        );
+      });
+
     // Whenever someone opens note modal
     $("#noteModal").on("click", function () {
         // Empty the notes from the note section
-        $("#notes").empty();
+        // $("#notes").empty();
         // Save the id from the p tag
         var thisId = $(this).attr("data-id");
 
@@ -43,25 +58,46 @@ $(document).ready(function () {
             });
     });
 
-    // When you click the savenote button post to the saved articles collection
-    $("#savenote").on("click", function () {
-        var thisId = $(this).attr("data-id");
-        $.ajax({
-                method: "POST",
-                url: "/saved/" + thisId,
-                data: {
-                    title: $("#titleinput").val(),
-                    body: $("#bodyinput").val()
-                }
-            })
-            .then(function (data) {
-                console.log(data);
-                $("#notes").empty();
-            });
+    // // When you click the Save  button post to the saved articles collection
+    // $("#saveNote").on("click", function () {
+    //     var thisId = $(this).attr("data-id");
+    //     $.ajax({
+    //             method: "POST",
+    //             url: "/saved/" + thisId,
+    //             data: {
+    //                 title: $("#titleinput").val(),
+    //                 body: $("#bodyinput").val()
+    //             }
+    //         })
+    //         .then(function (data) {
+    //             console.log(data);
+    //             $("#notes").empty();
+    //         });
 
-        // Clear the values entered note entry area
-        $("#titleinput").val("");
-        $("#bodyinput").val("");
-    });
+    //     // Clear the values entered note entry area
+    //     $("#titleinput").val("");
+    //     $("#bodyinput").val("");
+    // });
 
+    $(".create-form").on("submit", function(event) {
+        // Make sure to preventDefault on a submit event.
+        event.preventDefault();
+    
+        var newNote = {
+          noteAuthor: $("#noteAuthor").val(),
+          noteText: $("noteBody").val()
+        };
+    
+        // Send the POST request.
+        $.ajax("/articles/:id", {
+          type: "POST",
+          data: newNote
+        }).then(
+          function() {
+            console.log("new note added!");
+            // Reload the page to get the updated list
+            location.reload();
+          }
+        );
+      });
 });

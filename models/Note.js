@@ -2,6 +2,7 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema
 
 var noteSchema = new Schema({
+    noteAuthor: String,
     noteText: String,
     noteDate: {
         type: Date,

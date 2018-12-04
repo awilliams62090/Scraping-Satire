@@ -1,52 +1,87 @@
 <nav class="navbar navbar-dark bg-dark">
    <a href="/" class="navbar-brand">Scraping Satire</a>
   <form class="form-inline">
-    <button class="btn btn-outline-success" type="button">Delete Saved Articles</button>
+    <button class="btn btn-outline-success" type="button">Clear All Saved Articles</button>
   </form>
 </nav>
 <div class="wrapper">
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <h1 class="display-4">Fluid jumbotron</h1>
-            <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+            <h1 class="display-4">Saved Articles</h1>
+            <p class="lead">View Notes, Read More, or Delete Articles from the Saved Realm.</p>
         </div>
     </div>
     <div class="container">
-        <div class="card">
-            <div class="card-body">
-                This is some text within a card body.
-
-                <!-- Delete Article Button -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                    Delete Article
-                </button>
-            </div>
+    {{#each dbArticle}}
+    {{#if this.saved}}
+    <div class="card bg-secondary mb-3 articles">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <h4>{{this.title}}</h4>
+            <p>{{this.summary}}</p>
+            <a href={{this.link}} target="_blank">Read Full Article</a>
+          </div>
+          <div class="col-3">
+            <!-- Delete Article Button -->
+            <button type="button" class="btn btn-success toggleSaved" data-id={{this.id}}>
+              Delete Article
+            </button>
+            <!-- Button to trigger notes modal -->
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#noteModal">
+              View Notes
+            </button>
+          </div>
         </div>
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-            View Notes
-        </button>
+      </div>
+    </div> <br>
+    {{/if}}
+    {{/each}}
 
-        <!-- Modal for Notes-->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">{{title}} Notes</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        {{note}}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                </div>
-            </div>
+    <!-- Modal for Notes-->
+    {{#each dbArticle}}
+    <div class="modal fade" id="noteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="notemodalLabel">{{this.title}}</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {{#if this.note}}
+            <h5> Current Notes</h5>
+            {{this.note}}
+            {{/if}}
+            {{!-- {{#unless}}
+            <h5> It looks like we don't have any notes yet for this article!</h5>
+            {{/unless}} --}}
+            <h5>Add a Note</h5>
+
+            <form class="create-form">
+
+              <div class="form-group">
+                <label for="noteAuthor">Author:</label>
+                <input type="text" id="noteAuthor" name="author">
+              </div>
+
+              <div class="form-group">
+                <label for="noteBody">Article Note:</label>
+                <textarea id="noteBody" name="note" rows="3" cols="40"></textarea>
+              </div>
+
+              <button class="btn btn-sm btn-success" type="submit">Add Note</button>
+            </form>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
         </div>
+      </div>
     </div>
+    {{/each}}
+  </div>
 </div>

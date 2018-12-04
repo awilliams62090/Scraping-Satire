@@ -137,7 +137,7 @@ app.post("/articles/:id", function (req, res) {
 //Viewing all Notes
 app.get("/notes/", function (req, res) {
   db.Note.find({}).populate("note").then(function (dbNote) {
-    res.render("savednotes", {
+    res.render("index", {
       Note: dbNote
     });
   }).catch(function (err) {
@@ -145,46 +145,53 @@ app.get("/notes/", function (req, res) {
   })
 });
 
-//Viewing the notes associated with  specific article
-app.get("/notes/:id", function (req, res) {
+//Viewing the notes associated with specific article
+app.get("article/notes/:id", function (req, res) {
   db.Article.findOne({
     _id: req.params.id
   }).populate("note").then(function (dbNote) {
-    res.render("notes", {
-      Note: dbNote
+    res.render("index", {
+      note: dbNote
     });
   }).catch(function (err) {
     res.json(err);
   })
 });
 
+//Delete route for the notes
+app.delete("/notes/:id", function(req,res){
+  db.Note.remove({ _id: req.params.id }).then(function(dbNote) {
+      res.json(dbNote);
+    });
+});
+
 //I changed my Articles to have a Boolean Attribute of saved, to make the DB simple 
-// // Route for deleting an article from saved
-// app.delete("/saved/:id", function (req, res) {
-//   db.Saved.findOne({
-//       _id: req.params.id
-//     }).deleteOne()
-//     //db.Saved.deleteOne({_id: req.params.id})
-//     .then(function (savedArticle) {
-//       // View the added result in the console
-//       console.log(savedArticle);
-//       return db.Saved.findOneAndUpdate({
-//         _id: req.params.id
-//       }, {
-//         savedArticle: savedArticle._id
-//       }, {
-//         new: true
-//       });
-//     })
-//     .then(function (savedArticle) {
-//       res.render("saved", {
-//         savedArticle: savedArticle
-//       });
-//     })
-//     .catch(function (err) {
-//       console.log(err);
-//     });
-// })
+// Route for deleting an article from Article DB 
+app.delete("/saved/:id", function (req, res) {
+  db.Article.findOne({
+      _id: req.params.id
+    }).deleteOne()
+    //db.Saved.deleteOne({_id: req.params.id})
+    .then(function (dbArticle) {
+      // View the added result in the console
+      console.log("Deleting: " + dbArticle + "Articles");
+      return db.Article.findOneAndUpdate({
+        _id: req.params.id
+      }, {
+        dbArticle: dbArticle._id
+      }, {
+        new: true
+      });
+    })
+    .then(function (dbArticle) {
+      res.render("saved", {
+        savedArticle: savedArticle
+      });
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+})
 
 //Get route for Saved Articles(Boolean toggled to true in Article DB)
 app.get("/saved", function (req, res) {
