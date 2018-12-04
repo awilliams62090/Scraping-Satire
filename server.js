@@ -193,6 +193,19 @@ app.delete("/saved/:id", function (req, res) {
     });
 })
 
+app.put("/article/:id", function(req, res){
+  var condition= "id = " + req.params.id;
+  console.log("condition", condition);
+  db.Article.update(condition, function(result){
+      if(result.affectedRows==0){
+          return res.status(404).end();
+      }else {
+          res.status(200).end();
+      }
+  });
+});
+
+
 //Get route for Saved Articles(Boolean toggled to true in Article DB)
 app.get("/saved", function (req, res) {
   db.Article.find({
