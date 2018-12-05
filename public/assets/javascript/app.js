@@ -85,7 +85,7 @@ $(document).ready(function () {
     
         var newNote = {
           noteAuthor: $("#noteAuthor").val(),
-          noteText: $("noteBody").val()
+          noteText: $("#noteBody").val()
         };
     
         // Send the POST request.
